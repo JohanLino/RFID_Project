@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro de Participantes</title>
+<style>
+  #clock {
+    font-size: 24px;
+  }
+</style>
+</head>
+<body>
+  <!-- Reloj con horario actual y cuenta regresiva de 4 horas -->
+  <div id="clock"></div>
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const eventTime = new Date(now);
+      eventTime.setHours(22, 0, 0, 0); // Establecer hora del evento a las 22:00 hrs
+
+      const timeDiff = eventTime - now;
+      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+      document.getElementById('clock').innerHTML = `Evento a las 22:00 hrs<br>
+      Tiempo restante: ${hours} horas ${minutes} minutos ${seconds} segundos`;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+  </script>
+
+  <!-- Formulario para participantes -->
+  <h2>Formulario de Registro</h2>
+  <form>
+    <label for="nombre">Nombre:</label><br>
+    <input type="text" id="nombre" name="nombre" required><br><br>
+    <label for="foto">Foto:</label><br>
+    <input type="file" id="foto" name="foto" accept="image/*" required><br><br>
+    <input type="submit" value="Registrar">
+  </form>
+
+  <!-- Tabla para mostrar participantes registrados -->
+  <h2>Participantes Registrados</h2>
+  <table id="tabla-participantes">
+    <tr>
+      <th>Nombre</th>
+      <th>Foto</th>
+    </tr>
+  </table>
+
+  <!-- Contador de participantes registrados -->
+  <h2>Contador de Participantes</h2>
+  <div id="contador">0</div>
+  <script>
+    let participantesRegistrados = 0;
+
+    function actualizarContador() {
+      participantesRegistrados++;
+      document.getElementById('contador').innerHTML = participantesRegistrados;
+    }
+
+    function agregarParticipante(nombre, fotoURL) {
+      const tabla = document.getElementById('tabla-participantes');
+      const fila = tabla.insertRow();
+      const celdaNombre = fila.insertCell(0);
+      const celdaFoto = fila.insertCell(1);
+      celdaNombre.innerHTML = nombre;
+      celdaFoto.innerHTML = `<img src="${fotoURL}" width="100">`;
+    }
+
+    document.querySelector('form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const nombre = document.getElementById('nombre').value;
+      const foto = document.getElementById('foto').files[0];
+      const fotoURL = URL.createObjectURL(foto);
+      agregarParticipante(nombre, fotoURL);
+      actualizarContador();
+    });
+  </script>
+</body>
+</html>
